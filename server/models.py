@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-# Create db instance
 db = SQLAlchemy()
 
 class Message(db.Model):
@@ -18,7 +17,6 @@ class Message(db.Model):
     )
 
     def to_dict(self):
-        """Convert model instance to dictionary for JSON response"""
         return {
             "id": self.id,
             "body": self.body,
