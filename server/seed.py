@@ -1,34 +1,23 @@
-#!/usr/bin/env python3
+from app import app, db
+from models import Message
 
-from random import choice as rc
+# Seed data
+messages = [
+    {"body": "Hello, World!", "username": "Abdiaziz"},
+    {"body": "This is Flask + React 🚀", "username": "Mahat"},
+    {"body": "Full-stack development is fun!", "username": "ChatGPT"},
+]
 
-from faker import Faker
+with app.app_context():
+    print("Seeding database...")
 
-from app import app
-from models import db, Message
-
-fake = Faker()
-
-usernames = [fake.first_name() for i in range(4)]
-if "Duane" not in usernames:
-    usernames.append("Duane")
-
-def make_messages():
-
+    # Delete old records
     Message.query.delete()
-    
-    messages = []
 
-    for i in range(20):
-        message = Message(
-            body=fake.sentence(),
-            username=rc(usernames),
-        )
-        messages.append(message)
+    # Add new messages
+    for msg in messages:
+        message = Message(body=msg["body"], username=msg["username"])
+        db.session.add(message)
 
-    db.session.add_all(messages)
-    db.session.commit()        
-
-if __name__ == '__main__':
-    with app.app_context():
-        make_messages()
+    db.session.commit()
+    print("Done seeding ✅")
